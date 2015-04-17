@@ -30,7 +30,7 @@ class UserRepository extends Repository {
 	}
 
 	/**
-	 * Return all users with at least one account with role $role
+	 * Return all users with at least one account with role $roleIdentifier
 	 *
 	 * @param string $roleIdentifier
 	 * @return query result?
