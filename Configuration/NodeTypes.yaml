@@ -1,0 +1,16 @@
+# RestrictNode Mixin
+'Flowpack.Neos.FrontendLogin:RestrictNode':
+  abstract: TRUE
+  properties:
+    restrictNode:
+      type: boolean
+      ui:
+        label: 'Flowpack.Neos.FrontendLogin:NodeTypes.Node:properties.restrictNode'
+        reloadIfChanged: TRUE
+        inspector:
+          group: 'visibility'
+          position: 100
+
+'TYPO3.Neos:Node':
+  superTypes:
+    'Flowpack.Neos.FrontendLogin:RestrictNode': TRUE
