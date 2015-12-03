@@ -23,7 +23,7 @@ How-To:
 
 Now you should be able to test the frontend login by navigating to ``/login.html``
 
-Hide 
+Hide
 ----------------
 
 If you want to create a "member area" that is only visible to authenticated frontend users, add the following ``Policy.yaml`` to your site package:
@@ -36,6 +36,10 @@ privilegeTargets:
     'Acme.YourPackage:MembersArea':
       matcher: 'isDescendantNodeOf("/sites/yoursite/some/path")'
 
+  'TYPO3\TYPO3CR\Security\Authorization\Privilege\Node\ReadNodePrivilege':
+
+    'Acme.YourPackage:RestrictNode':
+      matcher: 'nodePropertyIs("restrictNode", true) || parentNodePropertyIs("restrictNode", true)'
 
 roles:
 
@@ -45,14 +49,20 @@ roles:
           # Grant "frontend users" access to the "Member area"
         privilegeTarget: 'Acme.YourPackage:MembersArea'
         permission: GRANT
-
+      -
+          # Grant "frontend users" access to Nodes with property "restricted" == true
+        privilegeTarget: 'Acme.YourPackage:RestrictNode'
+        permission: GRANT
 
   'TYPO3.Neos:Editor':
-
     privileges:
       -
           # Grant "backend users" to access the "Member area" - Otherwise those pages would be hidden in the backend, too!
         privilegeTarget: 'Acme.YourPackage:MembersArea'
+        permission: GRANT
+      -
+          # Grant "frontend users" access to Nodes with property "restricted" == true
+        privilegeTarget: 'Acme.YourPackage:RestrictNode'
         permission: GRANT
 ```
 

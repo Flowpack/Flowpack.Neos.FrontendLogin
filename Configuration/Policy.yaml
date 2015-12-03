@@ -7,6 +7,10 @@ privilegeTargets:
     'Flowpack.Neos.FrontendLogin:UserProfile':
       matcher: 'method(Flowpack\Neos\FrontendLogin\Controller\UserController->(?<!initialize).*Action())'
 
+  'TYPO3\TYPO3CR\Security\Authorization\Privilege\Node\ReadNodePrivilege':
+    'Flowpack.Neos.FrontendLogin:RestrictNode':
+      matcher: 'nodePropertyIs("restrictNode", true) || parentNodePropertyIs("restrictNode", true)'
+
 roles:
 
   'TYPO3.Flow:Everybody':
@@ -22,10 +26,18 @@ roles:
           # Grant "frontend users" access to the FrontendLoginProfile plugin
         privilegeTarget: 'Flowpack.Neos.FrontendLogin:UserProfile'
         permission: GRANT
+      -
+          # Grant "frontend users" access to Nodes with property "restricted" == true
+        privilegeTarget: 'Flowpack.Neos.FrontendLogin:RestrictNode'
+        permission: GRANT
 
   'TYPO3.Neos:Editor':
     privileges:
       -
           # Grant "backend users" access to the FrontendLoginProfile plugin - the login form plugin is granted to Everybody (see above)
         privilegeTarget: 'Flowpack.Neos.FrontendLogin:UserProfile'
+        permission: GRANT
+      -
+          # Grant "frontend users" access to Nodes with property "restricted" == true
+        privilegeTarget: 'Flowpack.Neos.FrontendLogin:RestrictNode'
         permission: GRANT
