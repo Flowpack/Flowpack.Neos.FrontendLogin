@@ -1,44 +1,51 @@
 <div class="col-lg-4">
-	<div class="panel panel-default">
-		<div class="panel-heading">Frontend user login form</div>
-		<div class="panel-body">
-			<f:security.ifAccess privilegeTarget="TYPO3.Neos:Backend.GeneralAccess">
-				<f:then>
-					<p>The Frontend User Login Form is disabled in backend mode.</p>
-				</f:then>
-				<f:else>
-					<f:flashMessages class="flashmessages" />
-					<f:security.ifHasRole role="Flowpack.Neos.FrontendLogin:User">
-						<f:then>
-							<p>You're logged in as <strong>"{account.accountIdentifier}"</strong></p>
-							<f:form action="logout" method="post" class="form-horizontal clearfix" additionalAttributes="{role:'form'}">
-								<f:form.submit value="Logout" class="btn btn-primary" />
-							</f:form>
-						</f:then>
-						<f:else>
-							<f:form action="authenticate" method="post" class="form-horizontal clearfix" additionalAttributes="{role:'form'}">
-								<div class="form-group">
-									<label for="typo3-neosdemotypo3org-username" class="col-lg-4 control-label">Username:</label>
-									<div class="col-lg-8">
-										<input name="__authentication[TYPO3][Flow][Security][Authentication][Token][UsernamePassword][username]" class="form-control" id="typo3-neosdemotypo3org-username" type="text" />
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="typo3-neosdemotypo3org-password" class="col-lg-4 control-label">Password:</label>
-									<div class="col-lg-8">
-										<input name="__authentication[TYPO3][Flow][Security][Authentication][Token][UsernamePassword][password]" class="form-control" id="typo3-neosdemotypo3org-password" type="password" />
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-lg-8 pull-right">
-										<f:form.submit value="Login" class="btn btn-primary" />
-									</div>
-								</div>
-							</f:form>
-						</f:else>
-					</f:security.ifHasRole>
-				</f:else>
-			</f:security.ifAccess>
-		</div>
-	</div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Frontend user login form</div>
+        <div class="panel-body">
+            <f:security.ifAccess privilegeTarget="TYPO3.Neos:Backend.GeneralAccess">
+                <f:then>
+                    <p>The Frontend User Login Form is disabled in backend mode.</p>
+                </f:then>
+                <f:else>
+                    <f:flashMessages class="flashmessages"/>
+                    <f:security.ifHasRole role="Flowpack.Neos.FrontendLogin:User">
+                        <f:then>
+                            <p>You're logged in as <strong>"{account.accountIdentifier}"</strong></p>
+                            <f:form action="logout" method="post" class="form-horizontal clearfix"
+                                    additionalAttributes="{role:'form'}">
+                                <f:form.submit value="Logout" class="btn btn-primary"/>
+                            </f:form>
+                        </f:then>
+                        <f:else>
+                            <f:form action="authenticate" method="post" class="form-horizontal clearfix"
+                                    additionalAttributes="{role:'form'}">
+                                <div class="form-group">
+                                    <label for="typo3-neosdemotypo3org-username" class="col-lg-4 control-label">Username:</label>
+
+                                    <div class="col-lg-8">
+                                        <input name="__authentication[TYPO3][Flow][Security][Authentication][Token][UsernamePassword][username]"
+                                               class="form-control" id="typo3-neosdemotypo3org-username" type="text"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="typo3-neosdemotypo3org-password" class="col-lg-4 control-label">Password:</label>
+
+                                    <div class="col-lg-8">
+                                        <input name="__authentication[TYPO3][Flow][Security][Authentication][Token][UsernamePassword][password]"
+                                               class="form-control" id="typo3-neosdemotypo3org-password"
+                                               type="password"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-8 pull-right">
+                                        <f:form.submit value="Login" class="btn btn-primary"/>
+                                    </div>
+                                </div>
+                            </f:form>
+                        </f:else>
+                    </f:security.ifHasRole>
+                </f:else>
+            </f:security.ifAccess>
+        </div>
+    </div>
 </div>

@@ -1,14 +1,14 @@
 {
-    "name": "flowpack/neos-frontendlogin",
-    "type": "typo3-flow-plugin",
-    "description": "TYPO3 Neos plugin implementing a simple frontend login",
-    "license": "MIT",
-    "require": {
-        "typo3/neos": "dev-master"
-    },
-    "autoload": {
-        "psr-0": {
-            "Flowpack\\Neos\\FrontendLogin": "Classes"
-        }
+  "name": "flowpack/neos-frontendlogin",
+  "type": "typo3-flow-plugin",
+  "description": "TYPO3 Neos plugin implementing a simple frontend login",
+  "license": "MIT",
+  "require": {
+    "typo3/neos": "dev-master"
+  },
+  "autoload": {
+    "psr-0": {
+      "Flowpack\\Neos\\FrontendLogin": "Classes"
     }
+  }
 }

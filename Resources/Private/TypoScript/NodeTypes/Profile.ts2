@@ -1,5 +1,5 @@
 prototype(Flowpack.Neos.FrontendLogin:Profile) < prototype(Plugin) {
-	package = 'Flowpack.Neos.FrontendLogin'
-	controller = 'User'
-	action = 'show'
+    package = 'Flowpack.Neos.FrontendLogin'
+    controller = 'User'
+    action = 'show'
 }

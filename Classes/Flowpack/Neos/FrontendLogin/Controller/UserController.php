@@ -13,38 +13,42 @@ use Flowpack\Neos\FrontendLogin\Domain\Service\FrontendUserService;
 /**
  * Controller for displaying a simple user profile for frontend users
  */
-class UserController extends ActionController {
+class UserController extends ActionController
+{
 
-	/**
-	 * @Flow\Inject
-	 * @var FrontendUserService
-	 */
-	protected $userService;
+    /**
+     * @Flow\Inject
+     * @var FrontendUserService
+     */
+    protected $userService;
 
-	/**
-	 * @return void
-	 */
-	public function showAction() {
-		$this->view->assign('user', $this->userService->getCurrentUser());
-	}
+    /**
+     * @return void
+     */
+    public function showAction()
+    {
+        $this->view->assign('user', $this->userService->getCurrentUser());
+    }
 
-	/**
-	 * @param User $user
-	 * @return void
-	 */
-	public function updateAction(User $user) {
-		$this->userService->updateUser($user);
-		$this->addFlashMessage('Successfully updated user data', 'Success');
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function updateAction(User $user)
+    {
+        $this->userService->updateUser($user);
+        $this->addFlashMessage('Successfully updated user data', 'Success');
 
-		$this->redirect('show');
-	}
+        $this->redirect('show');
+    }
 
-	/**
-	 * Disable the technical error flash message
-	 *
-	 * @return boolean
-	 */
-	protected function getErrorFlashMessage() {
-		return FALSE;
-	}
+    /**
+     * Disable the technical error flash message
+     *
+     * @return boolean
+     */
+    protected function getErrorFlashMessage()
+    {
+        return FALSE;
+    }
 }
