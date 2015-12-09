@@ -1,41 +1,46 @@
 <div>
-	<f:security.ifAccess privilegeTarget="TYPO3.Neos:Backend.GeneralAccess">
-		<f:then>
-			<p>The Frontend User Profile is disabled in backend mode.</p>
-		</f:then>
-		<f:else>
-			<f:flashMessages class="flashmessages" />
-			<f:form action="update" object="{user}" objectName="user" class="form-horizontal">
-				<fieldset>
-					<legend>Personal data</legend>
-					<div class="form-group">
-						<label for="givenName" class="col-sm-2 control-label">Given name</label>
-						<div class="col-sm-10">
-							<f:form.textfield id="givenName" class="form-control" required="true" property="givenName" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="familyName" class="col-sm-2 control-label">Family name</label>
-						<div class="col-sm-10">
-							<f:form.textfield id="familyName" class="form-control" required="true" property="familyName" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="familyName" class="col-sm-2 control-label">Email address</label>
-						<div class="col-sm-10">
-							<f:form.textfield id="emailAddress" type="email" class="form-control" property="emailAddress" />
-						</div>
-					</div>
-				</fieldset>
-				<fieldset>
-					<legend></legend>
-					<div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-							<button type="submit" class="btn btn-default">Update</button>
-						</div>
-					</div>
-				</fieldset>
-			</f:form>
-		</f:else>
-	</f:security.ifAccess>
+    <f:security.ifAccess privilegeTarget="TYPO3.Neos:Backend.GeneralAccess">
+        <f:then>
+            <p>The Frontend User Profile is disabled in backend mode.</p>
+        </f:then>
+        <f:else>
+            <f:flashMessages class="flashmessages"/>
+            <f:form action="update" object="{user}" objectName="user" class="form-horizontal">
+                <fieldset>
+                    <legend>Personal data</legend>
+                    <div class="form-group">
+                        <label for="givenName" class="col-sm-2 control-label">Given name</label>
+
+                        <div class="col-sm-10">
+                            <f:form.textfield id="givenName" class="form-control" required="true" property="givenName"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="familyName" class="col-sm-2 control-label">Family name</label>
+
+                        <div class="col-sm-10">
+                            <f:form.textfield id="familyName" class="form-control" required="true"
+                                              property="familyName"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="familyName" class="col-sm-2 control-label">Email address</label>
+
+                        <div class="col-sm-10">
+                            <f:form.textfield id="emailAddress" type="email" class="form-control"
+                                              property="emailAddress"/>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend></legend>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Update</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </f:form>
+        </f:else>
+    </f:security.ifAccess>
 </div>

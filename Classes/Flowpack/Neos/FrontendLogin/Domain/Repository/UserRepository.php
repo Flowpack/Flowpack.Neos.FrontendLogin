@@ -13,20 +13,22 @@ use Flowpack\Neos\FrontendLogin\Domain\Model\User;
 /**
  * @Flow\Scope("singleton")
  */
-class UserRepository extends Repository {
+class UserRepository extends Repository
+{
 
-	/**
-	 * @param Account $account
-	 * @return User
-	 */
-	public function findOneHavingAccount(Account $account) {
-		$query = $this->createQuery();
-		return
-			$query->matching(
-				$query->contains('accounts', $account)
-			)
-			->execute()
-			->getFirst();
-	}
+    /**
+     * @param Account $account
+     * @return User
+     */
+    public function findOneHavingAccount(Account $account)
+    {
+        $query = $this->createQuery();
+        return
+            $query->matching(
+                $query->contains('accounts', $account)
+            )
+                ->execute()
+                ->getFirst();
+    }
 
 }
