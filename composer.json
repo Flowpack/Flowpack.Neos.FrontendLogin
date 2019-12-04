@@ -4,7 +4,9 @@
     "description": "Neos plugin demonstrating a simple frontend login",
     "license": "MIT",
     "require": {
-        "neos/neos": "^5.0 || dev-master"
+        "neos/neos": "^5.0 || dev-master",
+        "neos/fusion-form": "^1.0 || dev-master"
+        "neos/fusion-afx": "^1.4 || dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -13,7 +15,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "4.0.x-dev"
+            "dev-master": "5.0.x-dev"
         },
         "applied-flow-migrations": [
             "TYPO3.FLOW3-201201261636",

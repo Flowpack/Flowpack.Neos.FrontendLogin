@@ -18,14 +18,23 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
+use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
+use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use Neos\Flow\Security\Exception\AuthenticationRequiredException;
+use Neos\Fusion\View\FusionView;
 
 /**
  * Controller for displaying a login/logout form and authenticating/logging out "frontend users"
  */
 class AuthenticationController extends AbstractAuthenticationController
 {
+
+    /**
+     * @var FusionView
+     */
+    protected $defaultViewObjectName = FusionView::class;
+
     /**
      * @var Translator
      * @Flow\Inject
@@ -45,11 +54,20 @@ class AuthenticationController extends AbstractAuthenticationController
     protected $translationSourceName;
 
     /**
+     * @Flow\Inject
+     * @var FlashMessageService
+     */
+    protected $flashMessageService;
+
+    /**
      * @return void
      */
     public function indexAction(): void
     {
-        $this->view->assign('account', $this->securityContext->getAccount());
+        $this->view->assignMultiple([
+            'account' => $this->securityContext->getAccount(),
+            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+        ]);
     }
 
     /**
@@ -116,5 +134,18 @@ class AuthenticationController extends AbstractAuthenticationController
     protected function getErrorFlashMessage()
     {
         return false;
+    }
+
+    /**
+     * Sets the Fusion path pattern on the view.
+     *
+     * @param ViewInterface $view
+     * @return void
+     */
+    protected function initializeView(ViewInterface $view)
+    {
+        parent::initializeView($view);
+        /** @var FusionView $view */
+        $view->setFusionPathPattern('resource://Flowpack.Neos.FrontendLogin/Private/Fusion/Backend');
     }
 }

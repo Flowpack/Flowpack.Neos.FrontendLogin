@@ -1,16 +1,18 @@
 ##
 # "LoginForm" element, extending "Plugin"
 #
-prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:Plugin) {
-	package = 'Flowpack.Neos.FrontendLogin'
-	controller = 'Authentication'
-	action = 'index'
+prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentComponent) {
+    renderer = Neos.Neos:Plugin {
+        package = 'Flowpack.Neos.FrontendLogin'
+        controller = 'Authentication'
+        action = 'index'
 
-	redirectAfterLoginUri = Neos.Neos:NodeUri {
-		node = ${q(node).property('redirectAfterLogin')}
-	}
+        redirectAfterLoginUri = Neos.Neos:NodeUri {
+            node = ${q(node).property('redirectAfterLogin')}
+        }
 
-	redirectAfterLogoutUri = Neos.Neos:NodeUri {
-		node = ${q(node).property('redirectAfterLogout')}
-	}
+        redirectAfterLogoutUri = Neos.Neos:NodeUri {
+            node = ${q(node).property('redirectAfterLogout')}
+        }
+    }
 }
