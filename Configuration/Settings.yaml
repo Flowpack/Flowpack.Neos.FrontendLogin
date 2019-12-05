@@ -14,6 +14,10 @@ Neos:
                 pattern: Flowpack\Neos\FrontendLogin\Security\NeosRequestPattern
                 patternOptions:
                   matchFrontend: true
+    mvc:
+      routes:
+        Flowpack.Neos.FrontendLogin:
+          position: 'before Neos.Neos'
   Neos:
     userInterface:
       translation:

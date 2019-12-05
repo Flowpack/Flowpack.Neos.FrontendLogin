@@ -1,18 +1,106 @@
 ##
-# "LoginForm" element, extending "Plugin"
+# "LoginForm" element, extending "ContentComponent"
 #
 prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentComponent) {
-    renderer = Neos.Neos:Plugin {
-        package = 'Flowpack.Neos.FrontendLogin'
-        controller = 'Authentication'
-        action = 'index'
-
-        redirectAfterLoginUri = Neos.Neos:NodeUri {
-            node = ${q(node).property('redirectAfterLogin')}
+    renderer = Neos.Fusion:Case {
+        loggedIn {
+            condition = ${Security.hasRole('Flowpack.Neos.FrontendLogin:User')}
+            renderer = Flowpack.Neos.FrontendLogin:LoginForm.Logout {
+                accountIdentifier = ${Security.getAccount().accountIdentifier}
+                redirectAfterLogoutUri = Neos.Neos:NodeUri {
+                    node = ${q(node).property('redirectAfterLogout')}
+                }
+            }
         }
 
-        redirectAfterLogoutUri = Neos.Neos:NodeUri {
-            node = ${q(node).property('redirectAfterLogout')}
+        default {
+            condition = true
+            renderer = Flowpack.Neos.FrontendLogin:LoginForm.Login {
+                redirectAfterLoginUri = Neos.Neos:NodeUri {
+                    node = ${q(node).property('redirectAfterLogin')}
+                }
+                redirectAfterFailureUri = Neos.Neos:NodeUri {
+                    node = ${documentNode}
+                }
+            }
         }
     }
+}
+
+prototype(Flowpack.Neos.FrontendLogin:LoginForm.Login) < prototype(Neos.Fusion:Component) {
+
+    redirectAfterLoginUri = null
+    redirectAfterFailureUri = null
+
+    settings = ${Configuration.setting('Flowpack.Neos.FrontendLogin')}
+
+    renderer = afx`
+        <ul @if.hasFlashMessages={props.flashMessages}>
+            <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
+                <li @if.isError={flashMessage.severity == 'Error'} class="flashmessages-error">{flashMessage.message}</li>
+            </Neos.Fusion:Loop>
+        </ul>
+
+        <Neos.Fusion.Form:Form
+                form.target.package="Flowpack.Neos.FrontendLogin"
+                form.target.controller="Authentication"
+                form.target.action="authenticate"
+                attributes.role="form"
+        >
+            <Neos.Fusion.Form:Hidden field.name="__redirectAfterLoginUri" field.value={props.redirectAfterLoginUri} />
+            <Neos.Fusion.Form:Hidden field.name="__redirectAfterFailureUri" field.value={props.redirectAfterFailureUri} />
+
+            <div>
+                <label for="flowpack-neos-frontendlogin-username" class="col-sm-2 control-label">
+                    {I18n.id('authentication.form.username').package(props.settings.translation.packageKey).source(props.settings.translation.sourceName).translate()}:
+                </label>
+                <Neos.Fusion.Form:Input
+                    field.name="__authentication[Neos][Flow][Security][Authentication][Token][UsernamePassword][username]"
+                    attributes.id="flowpack-neos-frontendlogin-username"
+                />
+            </div>
+            <div>
+                <label for="flowpack-neos-frontendlogin-password" class="col-sm-2 control-label">
+                    {I18n.id('authentication.form.password').package(props.settings.translation.packageKey).source(props.settings.translation.sourceName).translate()}:
+                </label>
+                <Neos.Fusion.Form:Password
+                    field.name="__authentication[Neos][Flow][Security][Authentication][Token][UsernamePassword][password]"
+                    attributes.id="flowpack-neos-frontendlogin-password"
+                />
+            </div>
+            <div>
+                <Neos.Fusion.Form:Button>
+                    {I18n.id('authentication.form.submit').package(props.settings.translation.packageKey).source(props.settings.translation.sourceName).translate()}
+                </Neos.Fusion.Form:Button>
+            </div>
+        </Neos.Fusion.Form:Form>
+    `
+}
+
+prototype(Flowpack.Neos.FrontendLogin:LoginForm.Logout) < prototype(Neos.Fusion:Component) {
+
+    redirectAfterLogoutUri = null
+    accountIdentifier = null
+
+    settings = ${Configuration.setting('Flowpack.Neos.FrontendLogin')}
+
+    renderer = afx`
+        <p>
+            {I18n.id('authentication.form.loggedIn').value('You are logged in as').package(props.settings.translation.packageKey).source(props.settings.translation.sourceName).translate()}&nbsp;
+            <strong>{props.accountIdentifier}</strong>
+        </p>
+        <Neos.Fusion.Form:Form
+                form.target.package="Flowpack.Neos.FrontendLogin"
+                form.target.controller="Authentication"
+                form.target.action="logout"
+                attributes.class="form-horizontal clearfix"
+                attributes.role="form"
+        >
+            <Neos.Fusion.Form:Hidden field.name="__redirectAfterLogoutUri" field.value={props.redirectAfterLogoutUri} />
+
+            <Neos.Fusion.Form:Button>
+                {I18n.id('authentication.form.logout').value('Logout').package(props.settings.translation.packageKey).source(props.settings.translation.sourceName).translate()}
+            </Neos.Fusion.Form:Button>
+        </Neos.Fusion.Form:Form>
+    `
 }

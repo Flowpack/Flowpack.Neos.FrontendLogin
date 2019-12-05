@@ -31,11 +31,6 @@ class AuthenticationController extends AbstractAuthenticationController
 {
 
     /**
-     * @var FusionView
-     */
-    protected $defaultViewObjectName = FusionView::class;
-
-    /**
      * @var Translator
      * @Flow\Inject
      */
@@ -60,17 +55,6 @@ class AuthenticationController extends AbstractAuthenticationController
     protected $flashMessageService;
 
     /**
-     * @return void
-     */
-    public function indexAction(): void
-    {
-        $this->view->assignMultiple([
-            'account' => $this->securityContext->getAccount(),
-            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
-        ]);
-    }
-
-    /**
      * return void
      */
     public function logoutAction()
@@ -78,12 +62,7 @@ class AuthenticationController extends AbstractAuthenticationController
         parent::logoutAction();
 
         $uri = $this->request->getInternalArgument('__redirectAfterLogoutUri');
-
-        if (empty($uri)) {
-            $this->redirect('index');
-        } else {
-            $this->redirectToUri($uri);
-        }
+        $this->redirectToUri($uri);
     }
 
     /**
@@ -94,12 +73,7 @@ class AuthenticationController extends AbstractAuthenticationController
     protected function onAuthenticationSuccess(ActionRequest $originalRequest = null)
     {
         $uri = $this->request->getInternalArgument('__redirectAfterLoginUri');
-
-        if (empty($uri)) {
-            $this->redirect('index');
-        } else {
-            $this->redirectToUri($uri);
-        }
+        $this->redirectToUri($uri);
     }
 
     /**
@@ -110,20 +84,8 @@ class AuthenticationController extends AbstractAuthenticationController
      */
     protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null)
     {
-        $title = $this->getTranslationById('authentication.failure.title');
-        $message = $this->getTranslationById('authentication.failure.message');
-        $this->addFlashMessage($message, $title, Error\Message::SEVERITY_ERROR, [], $exception === null ? 1496914553 : $exception->getCode());
-    }
-
-    /**
-     * Get translation by label id for configured source name and package key
-     *
-     * @param string $labelId Key to use for finding translation
-     * @return string Translated message or NULL on failure
-     */
-    protected function getTranslationById($labelId): string
-    {
-        return $this->translator->translateById($labelId, [], null, null, $this->translationSourceName, $this->translationPackageKey);
+        $uri = $this->request->getInternalArgument('__redirectAfterFailureUri');
+        $this->redirectToUri($uri);
     }
 
     /**
@@ -134,18 +96,5 @@ class AuthenticationController extends AbstractAuthenticationController
     protected function getErrorFlashMessage()
     {
         return false;
-    }
-
-    /**
-     * Sets the Fusion path pattern on the view.
-     *
-     * @param ViewInterface $view
-     * @return void
-     */
-    protected function initializeView(ViewInterface $view)
-    {
-        parent::initializeView($view);
-        /** @var FusionView $view */
-        $view->setFusionPathPattern('resource://Flowpack.Neos.FrontendLogin/Private/Fusion/Backend');
     }
 }
