@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "neos/neos": "^5.0 || dev-master",
-        "neos/fusion-form": "^1.0 || dev-master"
+        "neos/fusion-form": "^1.0 || dev-master",
         "neos/fusion-afx": "^1.4 || dev-master"
     },
     "autoload": {
