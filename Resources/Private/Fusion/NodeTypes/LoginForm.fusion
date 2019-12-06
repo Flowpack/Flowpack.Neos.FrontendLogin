@@ -2,10 +2,15 @@
 # "LoginForm" element, extending "ContentComponent"
 #
 prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentComponent) {
+
+    loginPrototype = 'Flowpack.Neos.FrontendLogin:LoginForm.Login'
+    logoutPrototype = 'Flowpack.Neos.FrontendLogin:LoginForm.Logout'
+
     renderer = Neos.Fusion:Case {
         loggedIn {
             condition = ${Security.hasRole('Flowpack.Neos.FrontendLogin:User')}
-            renderer = Flowpack.Neos.FrontendLogin:LoginForm.Logout {
+            type = ${props.logoutPrototype}
+            element {
                 accountIdentifier = ${Security.getAccount().accountIdentifier}
                 redirectAfterLogoutUri = Neos.Neos:NodeUri {
                     node = ${q(node).property('redirectAfterLogout')}
@@ -15,7 +20,8 @@ prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentCo
 
         default {
             condition = true
-            renderer = Flowpack.Neos.FrontendLogin:LoginForm.Login {
+            type = ${props.loginPrototype}
+            element {
                 redirectAfterLoginUri = Neos.Neos:NodeUri {
                     node = ${q(node).property('redirectAfterLogin')}
                 }
