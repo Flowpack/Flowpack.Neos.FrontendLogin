@@ -1,0 +1,21 @@
+
+
+-
+  name: 'Frontend Authenticate'
+  uriPattern: 'frontend/login(.{@format})'
+  defaults:
+    '@package': 'Flowpack.Neos.FrontendLogin'
+    '@controller': 'Authentication'
+    '@action': 'authenticate'
+    '@format': 'html'
+  httpMethods: ['POST']
+
+-
+  name:  'Frontend Logout'
+  uriPattern: 'frontend/logout(.{@format})'
+  defaults:
+    '@package': 'Flowpack.Neos.FrontendLogin'
+    '@controller': 'Authentication'
+    '@action': 'logout'
+    '@format': 'html'
+  httpMethods: ['POST']

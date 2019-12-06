@@ -18,14 +18,18 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Exception\UnsupportedRequestTypeException;
+use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
+use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use Neos\Flow\Security\Exception\AuthenticationRequiredException;
+use Neos\Fusion\View\FusionView;
 
 /**
  * Controller for displaying a login/logout form and authenticating/logging out "frontend users"
  */
 class AuthenticationController extends AbstractAuthenticationController
 {
+
     /**
      * @var Translator
      * @Flow\Inject
@@ -45,12 +49,10 @@ class AuthenticationController extends AbstractAuthenticationController
     protected $translationSourceName;
 
     /**
-     * @return void
+     * @Flow\Inject
+     * @var FlashMessageService
      */
-    public function indexAction(): void
-    {
-        $this->view->assign('account', $this->securityContext->getAccount());
-    }
+    protected $flashMessageService;
 
     /**
      * return void
@@ -60,12 +62,7 @@ class AuthenticationController extends AbstractAuthenticationController
         parent::logoutAction();
 
         $uri = $this->request->getInternalArgument('__redirectAfterLogoutUri');
-
-        if (empty($uri)) {
-            $this->redirect('index');
-        } else {
-            $this->redirectToUri($uri);
-        }
+        $this->redirectToUri($uri);
     }
 
     /**
@@ -76,36 +73,36 @@ class AuthenticationController extends AbstractAuthenticationController
     protected function onAuthenticationSuccess(ActionRequest $originalRequest = null)
     {
         $uri = $this->request->getInternalArgument('__redirectAfterLoginUri');
-
-        if (empty($uri)) {
-            $this->redirect('index');
-        } else {
-            $this->redirectToUri($uri);
-        }
+        $this->redirectToUri($uri);
     }
 
     /**
-     * Create translated FlashMessage and add it to flashMessageContainer
+     * Create add a validation error and send the request back to the referrer
      *
      * @param AuthenticationRequiredException $exception
      * @return void
      */
     protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null)
     {
-        $title = $this->getTranslationById('authentication.failure.title');
-        $message = $this->getTranslationById('authentication.failure.message');
-        $this->addFlashMessage($message, $title, Error\Message::SEVERITY_ERROR, [], $exception === null ? 1496914553 : $exception->getCode());
-    }
+        $referringRequest = $this->request->getReferringRequest();
+        if ($referringRequest === null) {
+            return;
+        }
 
-    /**
-     * Get translation by label id for configured source name and package key
-     *
-     * @param string $labelId Key to use for finding translation
-     * @return string Translated message or NULL on failure
-     */
-    protected function getTranslationById($labelId): string
-    {
-        return $this->translator->translateById($labelId, [], null, null, $this->translationSourceName, $this->translationPackageKey);
+        $validationResults = new Error\Result();
+        $validationResults->addError(new Error\Error('authenticationFailure'));
+
+        $packageKey = $referringRequest->getControllerPackageKey();
+        $subpackageKey = $referringRequest->getControllerSubpackageKey();
+        if ($subpackageKey !== null) {
+            $packageKey .= '\\' . $subpackageKey;
+        }
+
+        $argumentsForNextController = $referringRequest->getArguments();
+        $argumentsForNextController['__submittedArguments'] = [];
+        $argumentsForNextController['__submittedArgumentValidationResults'] = $validationResults;
+
+        $this->forward($referringRequest->getControllerActionName(), $referringRequest->getControllerName(), $packageKey , $argumentsForNextController);
     }
 
     /**
