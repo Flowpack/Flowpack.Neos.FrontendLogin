@@ -25,6 +25,21 @@ prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentCo
             }
         }
     }
+
+    @cache {
+        mode = 'dynamic'
+        entryIdentifier {
+            node = ${node}
+        }
+        entryDiscriminator = ${Security.hasRole('Flowpack.Neos.FrontendLogin:User') ? false : 'no-fe-user'}
+        context {
+            1 = 'node'
+            2 = 'documentNode'
+        }
+        entryTags {
+            1 = ${Neos.Caching.nodeTag(node)}
+        }
+    }
 }
 
 prototype(Flowpack.Neos.FrontendLogin:LoginForm.Login) < prototype(Neos.Fusion:Component) {
