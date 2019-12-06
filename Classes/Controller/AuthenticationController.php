@@ -77,15 +77,32 @@ class AuthenticationController extends AbstractAuthenticationController
     }
 
     /**
-     * Create translated FlashMessage and add it to flashMessageContainer
+     * Create add a validation error and send the request back to the referrer
      *
      * @param AuthenticationRequiredException $exception
      * @return void
      */
     protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null)
     {
-        $uri = $this->request->getInternalArgument('__redirectAfterFailureUri');
-        $this->redirectToUri($uri);
+        $referringRequest = $this->request->getReferringRequest();
+        if ($referringRequest === null) {
+            return;
+        }
+
+        $validationResults = new Error\Result();
+        $validationResults->addError(new Error\Error('authenticationFailure'));
+
+        $packageKey = $referringRequest->getControllerPackageKey();
+        $subpackageKey = $referringRequest->getControllerSubpackageKey();
+        if ($subpackageKey !== null) {
+            $packageKey .= '\\' . $subpackageKey;
+        }
+
+        $argumentsForNextController = $referringRequest->getArguments();
+        $argumentsForNextController['__submittedArguments'] = [];
+        $argumentsForNextController['__submittedArgumentValidationResults'] = $validationResults;
+
+        $this->forward($referringRequest->getControllerActionName(), $referringRequest->getControllerName(), $packageKey , $argumentsForNextController);
     }
 
     /**

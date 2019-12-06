@@ -19,9 +19,6 @@ prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentCo
                 redirectAfterLoginUri = Neos.Neos:NodeUri {
                     node = ${q(node).property('redirectAfterLogin')}
                 }
-                redirectAfterFailureUri = Neos.Neos:NodeUri {
-                    node = ${documentNode}
-                }
             }
         }
     }
@@ -31,7 +28,7 @@ prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentCo
         entryIdentifier {
             node = ${node}
         }
-        entryDiscriminator = ${Security.hasRole('Flowpack.Neos.FrontendLogin:User') ? false : 'no-fe-user'}
+        entryDiscriminator = ${(Security.hasRole('Flowpack.Neos.FrontendLogin:User') || request.internalArguments.__submittedArgumentValidationResults.errors) ? false : 'no-fe-user'}
         context {
             1 = 'node'
             2 = 'documentNode'
@@ -45,17 +42,10 @@ prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:ContentCo
 prototype(Flowpack.Neos.FrontendLogin:LoginForm.Login) < prototype(Neos.Fusion:Component) {
 
     redirectAfterLoginUri = null
-    redirectAfterFailureUri = null
 
     settings = ${Configuration.setting('Flowpack.Neos.FrontendLogin')}
 
     renderer = afx`
-        <ul @if.hasFlashMessages={props.flashMessages}>
-            <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
-                <li @if.isError={flashMessage.severity == 'Error'} class="flashmessages-error">{flashMessage.message}</li>
-            </Neos.Fusion:Loop>
-        </ul>
-
         <Neos.Fusion.Form:Form
                 form.target.package="Flowpack.Neos.FrontendLogin"
                 form.target.controller="Authentication"
@@ -63,7 +53,15 @@ prototype(Flowpack.Neos.FrontendLogin:LoginForm.Login) < prototype(Neos.Fusion:C
                 attributes.role="form"
         >
             <Neos.Fusion.Form:Hidden field.name="__redirectAfterLoginUri" field.value={props.redirectAfterLoginUri} />
-            <Neos.Fusion.Form:Hidden field.name="__redirectAfterFailureUri" field.value={props.redirectAfterFailureUri} />
+
+            <div @if.hasErrors={form.hasErrors()}>
+                <p><strong>
+                    {I18n.id('authentication.failure.title').package(props.settings.translation.packageKey).source(props.settings.translation.sourceName).translate()}
+                </strong></p>
+                <p>
+                    {I18n.id('authentication.failure.message').package(props.settings.translation.packageKey).source(props.settings.translation.sourceName).translate()}
+                </p>
+            </div>
 
             <div>
                 <label for="flowpack-neos-frontendlogin-username" class="col-sm-2 control-label">
