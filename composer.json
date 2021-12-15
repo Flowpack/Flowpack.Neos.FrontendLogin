@@ -4,7 +4,7 @@
     "description": "Neos plugin demonstrating a simple frontend login",
     "license": "MIT",
     "require": {
-        "php": "^7.2",
+        "php": "^7.2 || ^8.0",
         "neos/neos": "^5.0 || ^7.0 || dev-master"
     },
     "autoload": {
