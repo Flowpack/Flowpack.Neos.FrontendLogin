@@ -6,11 +6,17 @@ prototype(Flowpack.Neos.FrontendLogin:LoginForm) < prototype(Neos.Neos:Plugin) {
 	controller = 'Authentication'
 	action = 'index'
 
+	# Neos 9: Neos.Neos:NodeUri throws on a null node, and a reference to a
+	# document the current user may not read (e.g. the members area for an
+	# anonymous visitor) resolves to null — so only build the URIs when the
+	# reference is set and visible.
 	redirectAfterLoginUri = Neos.Neos:NodeUri {
 		node = ${q(node).property('redirectAfterLogin')}
+		@if.hasNode = ${q(node).property('redirectAfterLogin') != null}
 	}
 
 	redirectAfterLogoutUri = Neos.Neos:NodeUri {
 		node = ${q(node).property('redirectAfterLogout')}
+		@if.hasNode = ${q(node).property('redirectAfterLogout') != null}
 	}
 }
